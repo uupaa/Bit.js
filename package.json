@@ -2,11 +2,11 @@
   "name": "uupaa.bit.js",
   "version": "0.0.4",
   "description": "Bit operation",
-  "url": "https://github.com/uupaa/bit.js",
-  "keywords": ["uupaa", "WebModule", "Unstable"],
+  "url": "https://github.com/uupaa/Bit.js",
+  "keywords": ["Bit", "popcnt", "nlz", "ntz", "IEEE754", "uupaa", "WebModule", "Unstable"],
   "repository": {
     "type": "git",
-    "url": "https://github.com/uupaa/bit.js.git"
+    "url": "https://github.com/uupaa/Bit.js.git"
   },
   "scripts": {
     "sync": "node ../WebModule/run/sync.js; npm update; node ../WebModule/run/page.js",
@@ -33,20 +33,20 @@
     "develop": false,
     "label": ["@dev"],
     "browser": {
-      "source": ["lib/bit.js"],
-      "output": "release/bit.b.min.js"
+      "source": ["lib/Bit.js"],
+      "output": "release/Bit.b.min.js"
     },
     "worker": {
-      "source": ["lib/bit.js"],
-      "output": "release/bit.w.min.js"
+      "source": ["lib/Bit.js"],
+      "output": "release/Bit.w.min.js"
     },
     "node": {
-      "source": ["lib/bit.js"],
-      "output": "release/bit.n.min.js"
+      "source": ["lib/Bit.js"],
+      "output": "release/Bit.n.min.js"
     },
     "nw": {
-      "source": ["lib/bit.js"],
-      "output": "release/bit.nw.min.js"
+      "source": ["lib/Bit.js"],
+      "output": "release/Bit.nw.min.js"
     }
   },
   "dependencies": {},

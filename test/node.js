@@ -1,4 +1,4 @@
-// Bits test
+// Bit test
 
 require("../lib/WebModule.js");
 
@@ -7,7 +7,7 @@ WebModule.publish = true;
 
 
 require("./wmtools.js");
-require("../lib/bit.js");
-require("../release/bit.n.min.js");
+require("../lib/Bit.js");
+require("../release/Bit.n.min.js");
 require("./testcase.js");
 

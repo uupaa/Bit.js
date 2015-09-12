@@ -1,4 +1,4 @@
-// Bits test
+// Bit test
 
 onmessage = function(event) {
     self.unitTest = event.data; // { message, setting: { secondary, baseDir } }
@@ -19,8 +19,8 @@ onmessage = function(event) {
 
     
     importScripts("wmtools.js");
-    importScripts("../lib/bit.js");
-    importScripts("../release/bit.w.min.js");
+    importScripts("../lib/Bit.js");
+    importScripts("../release/Bit.w.min.js");
     importScripts("testcase.js");
 
     self.postMessage(self.unitTest);
