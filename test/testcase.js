@@ -17,7 +17,6 @@ var test = new Test("Bit", {
         }
     }).add([
         // generic test
-        testBit_mask,
         testBit_pick,
         testBit_popcnt,
         testBit_nlz,
@@ -42,44 +41,28 @@ if (IN_BROWSER || IN_NW) {
 }
 
 // --- test cases ------------------------------------------
-function testBit_mask(test, pass, miss) {
-
-    var result = {
-        1: Bit.mask(0x1234,      0, 4) === 0x4,
-        2: Bit.mask(0x1234,      4, 4) === 0x3,
-        3: Bit.mask(0x1234,      8, 4) === 0x2,
-        4: Bit.mask(0x1234,     12, 4) === 0x1,
-        5: Bit.mask(0xfedc1234, 16, 4) === 0xc,
-        6: Bit.mask(0xfedc1234, 20, 4) === 0xd,
-        7: Bit.mask(0xfedc1234, 24, 4) === 0xe,
-        8: Bit.mask(0xfedc1234, 28, 4) === 0xf,
-    };
-
-    if ( /false/.test(JSON.stringify(result)) ) {
-        test.done(miss());
-    } else {
-        test.done(pass());
-    }
-}
-
 function testBit_pick(test, pass, miss) {
-
     var result = {
-        1: Bit.pick(0x00001234,  3, 0) === 0x4,
-        2: Bit.pick(0x00001234,  7, 4) === 0x3,
-        3: Bit.pick(0x00001234, 11, 8) === 0x2,
-        4: Bit.pick(0x00001234, 15,12) === 0x1,
-        5: Bit.pick(0xfedc1234, 19,16) === 0xc,
-        6: Bit.pick(0xfedc1234, 23,20) === 0xd,
-        7: Bit.pick(0xfedc1234, 27,24) === 0xe,
-        8: Bit.pick(0xfedc1234, 31,28) === 0xf,
-        9: Bit.pick(0x00001234)        === 0x00001234,
-       10: Bit.pick(0x00001235,  0)    === 0x1,
-       11: Bit.pick(0x00001235,  0, 0) === 0x1,
-       12: Bit.pick(0x00001235,  1, 1) === 0x0,
-       13: Bit.pick(0x00001235,  1)    === 0x1,
-       14: Bit.pick(0x80000000,  31,31)=== 0x1,
-       15: Bit.pick(0x80000000,  31, 0)=== 0x80000000,
+        1: Bit.pick(0x00001234,  4,  3) === 0x4,
+        2: Bit.pick(0x00001234,  4,  7) === 0x3,
+        3: Bit.pick(0x00001234,  4, 11) === 0x2,
+        4: Bit.pick(0x00001234,  4, 15) === 0x1,
+        5: Bit.pick(0xfedc1234,  4, 19) === 0xc,
+        6: Bit.pick(0xfedc1234,  4, 23) === 0xd,
+        7: Bit.pick(0xfedc1234,  4, 27) === 0xe,
+        8: Bit.pick(0xfedc1234,  4, 31) === 0xf,
+        9: Bit.pick(0xfedc1234,  4    ) === 0xf,
+       10: Bit.pick(0x00001234, 32, 31) === 0x00001234,
+       11: Bit.pick(0x00001234, 32)     === 0x00001234,
+       12: Bit.pick(0x00001235,  1,  0) === 0x1,
+       13: Bit.pick(0x00001235,  1,  1) === 0x0,
+       14: Bit.pick(0x80000000,  1, 31) === 0x1,
+       15: Bit.pick(0x80000000,  1)     === 0x1,
+       // --- wrong use ---
+       16: Bit.pick(0xfedc1234, 32, 30) === 0x7edc1234, // width too big
+       17: Bit.pick(0xfedc1234, 32, 29) === 0x3edc1234, // width too big
+       18: Bit.pick(0xfedc1234, 32, 16) === 0x00001234, // width too big
+       19: Bit.pick(0xfedc1234, 32, 16) === 0x00001234, // width too big
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {

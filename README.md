@@ -14,11 +14,8 @@ Bit operation
 <script src="<module-dir>/lib/Bit.js"></script>
 <script>
 
-// bit shift and mask operation
-Bit.mask(0x1234, 4, 4)  // -> 0x3
-
 // pickup bits
-Bit.pick(0x1234, 3, 0)  // -> 0x3
+Bit.pick(0x1234, 4, 7)  // -> 0x3 (pick up the 4 bits from bit position 7)
 
 // population count (counting 1 bits)
 Bit.popcnt(0x6)         // -> 2
