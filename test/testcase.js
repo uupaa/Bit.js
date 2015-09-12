@@ -18,6 +18,7 @@ var test = new Test("Bit", {
     }).add([
         // generic test
         testBit_mask,
+        testBit_pick,
         testBit_popcnt,
         testBit_nlz,
         testBit_ntz,
@@ -52,6 +53,33 @@ function testBit_mask(test, pass, miss) {
         6: Bit.mask(0xfedc1234, 20, 4) === 0xd,
         7: Bit.mask(0xfedc1234, 24, 4) === 0xe,
         8: Bit.mask(0xfedc1234, 28, 4) === 0xf,
+    };
+
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_pick(test, pass, miss) {
+
+    var result = {
+        1: Bit.pick(0x00001234,  3, 0) === 0x4,
+        2: Bit.pick(0x00001234,  7, 4) === 0x3,
+        3: Bit.pick(0x00001234, 11, 8) === 0x2,
+        4: Bit.pick(0x00001234, 15,12) === 0x1,
+        5: Bit.pick(0xfedc1234, 19,16) === 0xc,
+        6: Bit.pick(0xfedc1234, 23,20) === 0xd,
+        7: Bit.pick(0xfedc1234, 27,24) === 0xe,
+        8: Bit.pick(0xfedc1234, 31,28) === 0xf,
+        9: Bit.pick(0x00001234)        === 0x00001234,
+       10: Bit.pick(0x00001235,  0)    === 0x1,
+       11: Bit.pick(0x00001235,  0, 0) === 0x1,
+       12: Bit.pick(0x00001235,  1, 1) === 0x0,
+       13: Bit.pick(0x00001235,  1)    === 0x1,
+       14: Bit.pick(0x80000000,  31,31)=== 0x1,
+       15: Bit.pick(0x80000000,  31, 0)=== 0x80000000,
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
