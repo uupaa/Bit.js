@@ -14,10 +14,26 @@ Bit operation
 <script src="<module-dir>/lib/Bit.js"></script>
 <script>
 
+// bit shift and mask operation
 Bit.mask(0x1234, 4, 4) === 0x3; // -> true
+
+// population count (counting 1 bits)
 Bit.popcnt(0x6) === 2;          // -> true
+
+// Number of Leading Zero
 Bit.nlz(0x6) === 29;            // -> true
+
+// Number of Training Zero
 Bit.ntz(0x6) ===  1;            // -> true
+
+Bit.toBinaryFormatString(0x10001000, { comma: true })
+// -> "0001,0000,0000,0000,0001,0000,0000,0000"
+
+Bit.toBinaryFormatString(Bit.toIEEE754FloatFormat(0.15625),  { comma: true })
+// -> "0011,1110,0010,0000,0000,0000,0000,0000"
+
+Bit.toBinaryFormatString(Bit.toIEEE754DoubleFormat(0.15625), { comma: true })
+// -> "0011,1111,1100,0100,0000,0000,0000,0000 0000,0000,0000,0000,0000,0000,0000,0000"
 
 </script>
 ```
