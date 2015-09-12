@@ -14,6 +14,10 @@ Bit operation
 <script src="<module-dir>/lib/Bit.js"></script>
 <script>
 
+// make bit mask
+Bit.mask(2)             // -> 0x03
+Bit.mask(4)             // -> 0x0f
+
 // pickup bits
 Bit.pick(0x1234, 4, 7)  // -> 0x3 (pick up the 4 bits from bit position 7)
 

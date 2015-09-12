@@ -17,6 +17,7 @@ var test = new Test("Bit", {
         }
     }).add([
         // generic test
+        testBit_mask,
         testBit_pick,
         testBit_popcnt,
         testBit_nlz,
@@ -41,6 +42,36 @@ if (IN_BROWSER || IN_NW) {
 }
 
 // --- test cases ------------------------------------------
+function testBit_mask(test, pass, miss) {
+    var result = {
+        1: Bit.mask(0)  === 0x0000,
+        2: Bit.mask(1)  === 0x0001,
+        3: Bit.mask(2)  === 0x0003,
+        4: Bit.mask(3)  === 0x0007,
+        5: Bit.mask(4)  === 0x000f,
+        6: Bit.mask(5)  === 0x001f,
+        7: Bit.mask(6)  === 0x003f,
+        8: Bit.mask(7)  === 0x007f,
+        9: Bit.mask(8)  === 0x00ff,
+       10: Bit.mask(9)  === 0x01ff,
+       11: Bit.mask(10) === 0x03ff,
+       12: Bit.mask(11) === 0x07ff,
+       13: Bit.mask(12) === 0x0fff,
+       14: Bit.mask(13) === 0x1fff,
+       15: Bit.mask(14) === 0x3fff,
+       16: Bit.mask(15) === 0x7fff,
+       17: Bit.mask(16) === 0xffff,
+       18: Bit.mask(31) === 0x7fffffff,
+       19: Bit.mask(32) === 0xffffffff,
+    };
+
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
 function testBit_pick(test, pass, miss) {
     var result = {
         1: Bit.pick(0x00001234,  4,  3) === 0x4,
