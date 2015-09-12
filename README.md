@@ -15,16 +15,16 @@ Bit operation
 <script>
 
 // bit shift and mask operation
-Bit.mask(0x1234, 4, 4) === 0x3; // -> true
+Bit.mask(0x1234, 4, 4)  // -> 0x3
 
 // population count (counting 1 bits)
-Bit.popcnt(0x6) === 2;          // -> true
+Bit.popcnt(0x6)         // -> 2
 
 // Number of Leading Zero
-Bit.nlz(0x6) === 29;            // -> true
+Bit.nlz(0x6)            // -> 29
 
 // Number of Training Zero
-Bit.ntz(0x6) ===  1;            // -> true
+Bit.ntz(0x6)            // -> 1
 
 Bit.toBinaryFormatString(0x10001000, { comma: true })
 // -> "0001,0000,0000,0000,0001,0000,0000,0000"
