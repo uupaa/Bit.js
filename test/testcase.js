@@ -17,10 +17,13 @@ var test = new Test("Bit", {
         }
     }).add([
         // generic test
-        testBits_mask,
-        testBits_popcnt,
-        testBits_nlz,
-        testBits_ntz,
+        testBit_mask,
+        testBit_popcnt,
+        testBit_nlz,
+        testBit_ntz,
+        testBit_toBinaryFormatString,
+        testBit_toIEEE754FloatFormat,
+        testBit_toIEEE754DoubleFormat,
     ]);
 
 if (IN_BROWSER || IN_NW) {
@@ -38,7 +41,7 @@ if (IN_BROWSER || IN_NW) {
 }
 
 // --- test cases ------------------------------------------
-function testBits_mask(test, pass, miss) {
+function testBit_mask(test, pass, miss) {
 
     var result = {
         1: Bit.mask(0x1234,      0, 4) === 0x4,
@@ -58,7 +61,7 @@ function testBits_mask(test, pass, miss) {
     }
 }
 
-function testBits_popcnt(test, pass, miss) {
+function testBit_popcnt(test, pass, miss) {
 
     var result = {
         1: Bit.popcnt(0x0) === 0, // 0b0000
@@ -78,7 +81,7 @@ function testBits_popcnt(test, pass, miss) {
     }
 }
 
-function testBits_nlz(test, pass, miss) {
+function testBit_nlz(test, pass, miss) {
 
     var result = {                      //   fedcba9876543210fedcba9876543210
         1: Bit.nlz(0x0) === 32,         // 0b00000000000000000000000000000000
@@ -109,7 +112,7 @@ function testBits_nlz(test, pass, miss) {
     }
 }
 
-function testBits_ntz(test, pass, miss) {
+function testBit_ntz(test, pass, miss) {
 
     var result = {                      //   fedcba9876543210fedcba9876543210
         1: Bit.ntz(0x0) === 32,         // 0b00000000000000000000000000000000
@@ -131,6 +134,52 @@ function testBits_ntz(test, pass, miss) {
        17: Bit.ntz(0x3fffffff) ===  0,  // 0b00111111111111111111111111111111
        18: Bit.ntz(0x7fffffff) ===  0,  // 0b01111111111111111111111111111111
        19: Bit.ntz(0xffffffff) ===  0,  // 0b11111111111111111111111111111111
+    };
+
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_toBinaryFormatString(test, pass, miss) {
+    var result = {
+        1: Bit.toBinaryFormatString(0x00000000, { comma: true }) === "0000,0000,0000,0000,0000,0000,0000,0000",
+        2: Bit.toBinaryFormatString(0x00001000, { comma: true }) === "0000,0000,0000,0000,0001,0000,0000,0000",
+        3: Bit.toBinaryFormatString(0x10001000, { comma: true }) === "0001,0000,0000,0000,0001,0000,0000,0000",
+        4: Bit.toBinaryFormatString(0xffff0000, { comma: true }) === "1111,1111,1111,1111,0000,0000,0000,0000",
+        5: Bit.toBinaryFormatString(0xffffffff, { comma: true }) === "1111,1111,1111,1111,1111,1111,1111,1111",
+        6: Bit.toBinaryFormatString(0xffffffff)                  === "11111111111111111111111111111111",
+        7: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 8 })  === "1111,1111",
+        8: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 16 }) === "1111,1111,1111,1111",
+        9: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 32 }) === "1111,1111,1111,1111,1111,1111,1111,1111",
+    };
+
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_toIEEE754FloatFormat(test, pass, miss) {
+    var result = {
+        1: Bit.toBinaryFormatString(Bit.toIEEE754FloatFormat(0.15625),  { comma: true }) === "0011,1110,0010,0000,0000,0000,0000,0000",
+        2: Bit.toBinaryFormatString(Bit.toIEEE754FloatFormat(-118.625), { comma: true }) === "1100,0010,1110,1101,0100,0000,0000,0000",
+    };
+
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_toIEEE754DoubleFormat(test, pass, miss) {
+    var result = {
+        1: Bit.toBinaryFormatString(Bit.toIEEE754DoubleFormat(0.15625),  { comma: true }) === "0011,1111,1100,0100,0000,0000,0000,0000 0000,0000,0000,0000,0000,0000,0000,0000",
+        2: Bit.toBinaryFormatString(Bit.toIEEE754DoubleFormat(-118.625), { comma: true }) === "1100,0000,0101,1101,1010,1000,0000,0000 0000,0000,0000,0000,0000,0000,0000,0000",
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
