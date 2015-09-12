@@ -151,9 +151,14 @@ function testBit_toBinaryFormatString(test, pass, miss) {
         4: Bit.toBinaryFormatString(0xffff0000, { comma: true }) === "1111,1111,1111,1111,0000,0000,0000,0000",
         5: Bit.toBinaryFormatString(0xffffffff, { comma: true }) === "1111,1111,1111,1111,1111,1111,1111,1111",
         6: Bit.toBinaryFormatString(0xffffffff)                  === "11111111111111111111111111111111",
-        7: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 8 })  === "1111,1111",
-        8: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 16 }) === "1111,1111,1111,1111",
-        9: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 32 }) === "1111,1111,1111,1111,1111,1111,1111,1111",
+        7: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 1 })  === "1",
+        8: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 2 })  === "11",
+        9: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 4 })  === "1111",
+       10: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 8 })  === "1111,1111",
+       11: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 11 }) ===  "111,1111,1111",
+       12: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 16 }) === "1111,1111,1111,1111",
+       13: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 24 }) === "1111,1111,1111,1111,1111,1111",
+       14: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 32 }) === "1111,1111,1111,1111,1111,1111,1111,1111",
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
