@@ -18,13 +18,14 @@ var test = new Test("Bit", {
     }).add([
         // generic test
         testBit_mask,
-        testBit_pick,
+        testBit_split,
         testBit_popcnt,
         testBit_nlz,
         testBit_ntz,
-        testBit_toBinaryFormatString,
-        testBit_toIEEE754FloatFormat,
-        testBit_toIEEE754DoubleFormat,
+        testBit_toBin,
+        testBit_toBinHex,
+        testBit_toString,
+        testBit_toIEEE754,
     ]);
 
 if (IN_BROWSER || IN_NW) {
@@ -72,28 +73,33 @@ function testBit_mask(test, pass, miss) {
     }
 }
 
-function testBit_pick(test, pass, miss) {
+function testBit_split(test, pass, miss) {
+    var BIT_PATTERN = {
+        "BIT":    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        "NIBBLE": [4, 4, 4, 4, 4, 4, 4, 4],
+        "BYTE":   [8, 8, 8, 8],
+        "WORD":   [16, 16],
+    };
+
     var result = {
-        1: Bit.pick(0x00001234,  4,  3) === 0x4,
-        2: Bit.pick(0x00001234,  4,  7) === 0x3,
-        3: Bit.pick(0x00001234,  4, 11) === 0x2,
-        4: Bit.pick(0x00001234,  4, 15) === 0x1,
-        5: Bit.pick(0xfedc1234,  4, 19) === 0xc,
-        6: Bit.pick(0xfedc1234,  4, 23) === 0xd,
-        7: Bit.pick(0xfedc1234,  4, 27) === 0xe,
-        8: Bit.pick(0xfedc1234,  4, 31) === 0xf,
-        9: Bit.pick(0xfedc1234,  4    ) === 0xf,
-       10: Bit.pick(0x00001234, 32, 31) === 0x00001234,
-       11: Bit.pick(0x00001234, 32)     === 0x00001234,
-       12: Bit.pick(0x00001235,  1,  0) === 0x1,
-       13: Bit.pick(0x00001235,  1,  1) === 0x0,
-       14: Bit.pick(0x80000000,  1, 31) === 0x1,
-       15: Bit.pick(0x80000000,  1)     === 0x1,
-       // --- wrong use ---
-       16: Bit.pick(0xfedc1234, 32, 30) === 0x7edc1234, // width too big
-       17: Bit.pick(0xfedc1234, 32, 29) === 0x3edc1234, // width too big
-       18: Bit.pick(0xfedc1234, 32, 16) === 0x00001234, // width too big
-       19: Bit.pick(0xfedc1234, 32, 16) === 0x00001234, // width too big
+        // 32 bit
+        1: Bit.split(0xaaaa5555, BIT_PATTERN.BIT).join()    === [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+                                                                 0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1].join(),
+        2: Bit.split(0xaaaa5555).join()                     === [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+                                                                 0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1].join(),
+        3: Bit.split(0xabcdef01, BIT_PATTERN.NIBBLE).join() === [10,11,12,13,14,15,0,1].join(),
+        4: Bit.split(0xabcdef01, BIT_PATTERN.BYTE).join()   === [0xab, 0xcd, 0xef, 0x01].join(),
+        5: Bit.split(0xabcdef01, BIT_PATTERN.WORD).join()   === [0xabcd, 0xef01].join(),
+        6: Bit.split(0x00001234, [16,4,4,4,4]).join()       === [0x0000, 0x1, 0x2, 0x3, 0x4].join(),
+        7: Bit.split(0xfedc1234, [4,4,4,4,16]).join()       === [0xf, 0xe, 0xd, 0xc, 0x1234].join(),
+        8: Bit.split(0xfedc1234, [24,8]).join()             === [0xfedc12, 0x34].join(),
+        9: Bit.split(0xfedc1234, [32]).join()               === [0xfedc1234].join(),
+       10: Bit.split(0xfedc1234, [0,16]).join()             === [0,0x1234].join(),
+        // --- wrong use ---
+       20: Bit.split(0xfedc1234, [0]).join()                === [0].join(),
+       21: Bit.split(0xfedc1234, [-1]).join()               === [0].join(),
+       22: Bit.split(0xfedc1234, [33]).join()               === [0xfedc1234].join(),
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
@@ -185,22 +191,14 @@ function testBit_ntz(test, pass, miss) {
     }
 }
 
-function testBit_toBinaryFormatString(test, pass, miss) {
+function testBit_toString(test, pass, miss) {
     var result = {
-        1: Bit.toBinaryFormatString(0x00000000, { comma: true }) === "0000,0000,0000,0000,0000,0000,0000,0000",
-        2: Bit.toBinaryFormatString(0x00001000, { comma: true }) === "0000,0000,0000,0000,0001,0000,0000,0000",
-        3: Bit.toBinaryFormatString(0x10001000, { comma: true }) === "0001,0000,0000,0000,0001,0000,0000,0000",
-        4: Bit.toBinaryFormatString(0xffff0000, { comma: true }) === "1111,1111,1111,1111,0000,0000,0000,0000",
-        5: Bit.toBinaryFormatString(0xffffffff, { comma: true }) === "1111,1111,1111,1111,1111,1111,1111,1111",
-        6: Bit.toBinaryFormatString(0xffffffff)                  === "11111111111111111111111111111111",
-        7: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 1 })  === "1",
-        8: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 2 })  === "11",
-        9: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 4 })  === "1111",
-       10: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 8 })  === "1111,1111",
-       11: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 11 }) ===  "111,1111,1111",
-       12: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 16 }) === "1111,1111,1111,1111",
-       13: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 24 }) === "1111,1111,1111,1111,1111,1111",
-       14: Bit.toBinaryFormatString(0xffffffff, { comma: true, width: 32 }) === "1111,1111,1111,1111,1111,1111,1111,1111",
+        1: Bit.toString(0x00000000, [4,4,4,4,4,4,4,4])       === "0000,0000,0000,0000,0000,0000,0000,0000",
+        2: Bit.toString(0x12345678, [4,4,4,4,4,4,4,4])       === "0001,0010,0011,0100,0101,0110,0111,1000",
+        3: Bit.toString(0x12345678, [16,12,4])               === "0001001000110100,010101100111,1000",
+       11: Bit.toString(0x00000000, [4,4,4,4,4,4,4,4], true) === "0000(0),0000(0),0000(0),0000(0),0000(0),0000(0),0000(0),0000(0)",
+       12: Bit.toString(0x12345678, [4,4,4,4,4,4,4,4], true) === "0001(1),0010(2),0011(3),0100(4),0101(5),0110(6),0111(7),1000(8)",
+       13: Bit.toString(0x12345678, [16,12,4], true)         === "0001001000110100(1234),010101100111(567),1000(8)",
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
@@ -210,10 +208,11 @@ function testBit_toBinaryFormatString(test, pass, miss) {
     }
 }
 
-function testBit_toIEEE754FloatFormat(test, pass, miss) {
+function testBit_toBin(test, pass, miss) {
     var result = {
-        1: Bit.toBinaryFormatString(Bit.toIEEE754FloatFormat(0.15625),  { comma: true }) === "0011,1110,0010,0000,0000,0000,0000,0000",
-        2: Bit.toBinaryFormatString(Bit.toIEEE754FloatFormat(-118.625), { comma: true }) === "1100,0010,1110,1101,0100,0000,0000,0000",
+      101: Bit.toBin(0x00000000,    [4,4,4,4,4,4,4,4])       === "0000,0000,0000,0000,0000,0000,0000,0000",
+      102: Bit.toBin(0x12345678,    [4,4,4,4,4,4,4,4])       === "0001,0010,0011,0100,0101,0110,0111,1000",
+      103: Bit.toBin(0x12345678,    [16,12,4])               === "0001001000110100,010101100111,1000",
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
@@ -223,10 +222,33 @@ function testBit_toIEEE754FloatFormat(test, pass, miss) {
     }
 }
 
-function testBit_toIEEE754DoubleFormat(test, pass, miss) {
+function testBit_toBinHex(test, pass, miss) {
     var result = {
-        1: Bit.toBinaryFormatString(Bit.toIEEE754DoubleFormat(0.15625),  { comma: true }) === "0011,1111,1100,0100,0000,0000,0000,0000 0000,0000,0000,0000,0000,0000,0000,0000",
-        2: Bit.toBinaryFormatString(Bit.toIEEE754DoubleFormat(-118.625), { comma: true }) === "1100,0000,0101,1101,1010,1000,0000,0000 0000,0000,0000,0000,0000,0000,0000,0000",
+      111: Bit.toBinHex(0x00000000, [4,4,4,4,4,4,4,4], true) === "0000(0),0000(0),0000(0),0000(0),0000(0),0000(0),0000(0),0000(0)",
+      112: Bit.toBinHex(0x12345678, [4,4,4,4,4,4,4,4], true) === "0001(1),0010(2),0011(3),0100(4),0101(5),0110(6),0111(7),1000(8)",
+      113: Bit.toBinHex(0x12345678, [16,12,4], true)         === "0001001000110100(1234),010101100111(567),1000(8)",
+    };
+
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_toIEEE754(test, pass, miss) {
+    var a = Bit.toIEEE754(0.15625, true);
+    var b = Bit.toIEEE754(-118.625, true);
+    var c = Bit.toIEEE754(0.15625);
+    var d = Bit.toIEEE754(-118.625);
+
+    var result = {
+        1: Bit.toBinHex(a,    [1, 8, 23]) === "0(0),01111100(7c),01000000000000000000000(200000)",
+        2: Bit.toBinHex(b,    [1, 8, 23]) === "1(1),10000101(85),11011010100000000000000(6d4000)",
+        3: Bit.toBinHex(c[0], [1,11,20])  === "0(0),01111111100(3fc),01000000000000000000(40000)",
+        4: Bit.toBinHex(c[1], [32])       === "00000000000000000000000000000000(0)",
+        5: Bit.toBinHex(d[0], [1,11,20])  === "1(1),10000000101(405),11011010100000000000(da800)",
+        6: Bit.toBinHex(d[1], [32])       === "00000000000000000000000000000000(0)",
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
