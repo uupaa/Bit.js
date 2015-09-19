@@ -98,10 +98,7 @@ function testBit_split(test, pass, miss) {
         8: _join(Bit.split(0xfedc1234, [24,8]))             === [0xfedc12, 0x34].join(),
         9: _join(Bit.split(0xfedc1234, [32]))               === [0xfedc1234].join(),
        10: _join(Bit.split(0xfedc1234, [0,16]))             === [0,0x1234].join(),
-        // --- wrong use ---
        20: _join(Bit.split(0xfedc1234, [0]))                === [0].join(),
-       21: _join(Bit.split(0xfedc1234, [-1]))               === [0].join(),
-       22: _join(Bit.split(0xfedc1234, [33]))               === [0xfedc1234].join(),
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
