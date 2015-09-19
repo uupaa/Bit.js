@@ -80,25 +80,31 @@ function testBit_split(test, pass, miss) {
         "BYTE":   [8, 8, 8, 8],
         "WORD":   [16, 16],
     };
+    function _join(u32array) {
+        if (u32array.join) { // ES6 TypedArray.prototype.join()
+            return u32array.join();
+        }
+        return [].slice.call(u32array).join(); // ES5 polyfill
+    }
 
     var result = {
         // 32 bit
-        1: Bit.split(0xaaaa5555, BIT_PATTERN.BIT).join()    === [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+        1: _join(Bit.split(0xaaaa5555, BIT_PATTERN.BIT))    === [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
                                                                  0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1].join(),
-        2: Bit.split(0xaaaa5555).join()                     === [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+        2: _join(Bit.split(0xaaaa5555))                     === [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
                                                                  0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1].join(),
-        3: Bit.split(0xabcdef01, BIT_PATTERN.NIBBLE).join() === [10,11,12,13,14,15,0,1].join(),
-        4: Bit.split(0xabcdef01, BIT_PATTERN.BYTE).join()   === [0xab, 0xcd, 0xef, 0x01].join(),
-        5: Bit.split(0xabcdef01, BIT_PATTERN.WORD).join()   === [0xabcd, 0xef01].join(),
-        6: Bit.split(0x00001234, [16,4,4,4,4]).join()       === [0x0000, 0x1, 0x2, 0x3, 0x4].join(),
-        7: Bit.split(0xfedc1234, [4,4,4,4,16]).join()       === [0xf, 0xe, 0xd, 0xc, 0x1234].join(),
-        8: Bit.split(0xfedc1234, [24,8]).join()             === [0xfedc12, 0x34].join(),
-        9: Bit.split(0xfedc1234, [32]).join()               === [0xfedc1234].join(),
-       10: Bit.split(0xfedc1234, [0,16]).join()             === [0,0x1234].join(),
+        3: _join(Bit.split(0xabcdef01, BIT_PATTERN.NIBBLE)) === [10,11,12,13,14,15,0,1].join(),
+        4: _join(Bit.split(0xabcdef01, BIT_PATTERN.BYTE))   === [0xab, 0xcd, 0xef, 0x01].join(),
+        5: _join(Bit.split(0xabcdef01, BIT_PATTERN.WORD))   === [0xabcd, 0xef01].join(),
+        6: _join(Bit.split(0x00001234, [16,4,4,4,4]))       === [0x0000, 0x1, 0x2, 0x3, 0x4].join(),
+        7: _join(Bit.split(0xfedc1234, [4,4,4,4,16]))       === [0xf, 0xe, 0xd, 0xc, 0x1234].join(),
+        8: _join(Bit.split(0xfedc1234, [24,8]))             === [0xfedc12, 0x34].join(),
+        9: _join(Bit.split(0xfedc1234, [32]))               === [0xfedc1234].join(),
+       10: _join(Bit.split(0xfedc1234, [0,16]))             === [0,0x1234].join(),
         // --- wrong use ---
-       20: Bit.split(0xfedc1234, [0]).join()                === [0].join(),
-       21: Bit.split(0xfedc1234, [-1]).join()               === [0].join(),
-       22: Bit.split(0xfedc1234, [33]).join()               === [0xfedc1234].join(),
+       20: _join(Bit.split(0xfedc1234, [0]))                === [0].join(),
+       21: _join(Bit.split(0xfedc1234, [-1]))               === [0].join(),
+       22: _join(Bit.split(0xfedc1234, [33]))               === [0xfedc1234].join(),
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
@@ -192,9 +198,9 @@ function testBit_ntz(test, pass, miss) {
 
 function testBit_bin(test, pass, miss) {
     var result = {
-      101: Bit.bin(0x00000000,    [4,4,4,4,4,4,4,4])       === "0000,0000,0000,0000,0000,0000,0000,0000",
-      102: Bit.bin(0x12345678,    [4,4,4,4,4,4,4,4])       === "0001,0010,0011,0100,0101,0110,0111,1000",
-      103: Bit.bin(0x12345678,    [16,12,4])               === "0001001000110100,010101100111,1000",
+      101: Bit.bin(0x00000000, [4,4,4,4,4,4,4,4]) === "0000,0000,0000,0000,0000,0000,0000,0000",
+      102: Bit.bin(0x12345678, [4,4,4,4,4,4,4,4]) === "0001,0010,0011,0100,0101,0110,0111,1000",
+      103: Bit.bin(0x12345678, [16,12,4])         === "0001001000110100,010101100111,1000",
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
@@ -206,9 +212,9 @@ function testBit_bin(test, pass, miss) {
 
 function testBit_dump(test, pass, miss) {
     var result = {
-      111: Bit.dump(0x00000000, [4,4,4,4,4,4,4,4], true) === "0000(0),0000(0),0000(0),0000(0),0000(0),0000(0),0000(0),0000(0)",
-      112: Bit.dump(0x12345678, [4,4,4,4,4,4,4,4], true) === "0001(1),0010(2),0011(3),0100(4),0101(5),0110(6),0111(7),1000(8)",
-      113: Bit.dump(0x12345678, [16,12,4], true)         === "0001001000110100(1234),010101100111(567),1000(8)",
+      111: Bit.dump(0x00000000, [4,4,4,4,4,4,4,4]) === "0000(0),0000(0),0000(0),0000(0),0000(0),0000(0),0000(0),0000(0)",
+      112: Bit.dump(0x12345678, [4,4,4,4,4,4,4,4]) === "0001(1),0010(2),0011(3),0100(4),0101(5),0110(6),0111(7),1000(8)",
+      113: Bit.dump(0x12345678, [16,12,4])         === "0001001000110100(1234),010101100111(567),1000(8)",
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
@@ -219,14 +225,14 @@ function testBit_dump(test, pass, miss) {
 }
 
 function testBit_IEEE754(test, pass, miss) {
-    var a = Bit.IEEE754(0.15625, true);
-    var b = Bit.IEEE754(-118.625, true);
-    var c = Bit.IEEE754(0.15625);
-    var d = Bit.IEEE754(-118.625);
+    var a = Bit.IEEE754(0.15625,  false);   // Single-precision, Uint32Array
+    var b = Bit.IEEE754(-118.625, false);   // Single-precision, Uint32Array
+    var c = Bit.IEEE754(0.15625,  true);    // Double-precision, Uint32Array
+    var d = Bit.IEEE754(-118.625, true);    // Double-precision, Uint32Array
 
     var result = {
-        1: Bit.dump(a,    [1, 8, 23]) === "0(0),01111100(7c),01000000000000000000000(200000)",
-        2: Bit.dump(b,    [1, 8, 23]) === "1(1),10000101(85),11011010100000000000000(6d4000)",
+        1: Bit.dump(a[0], [1, 8, 23]) === "0(0),01111100(7c),01000000000000000000000(200000)",
+        2: Bit.dump(b[0], [1, 8, 23]) === "1(1),10000101(85),11011010100000000000000(6d4000)",
         3: Bit.dump(c[0], [1,11,20])  === "0(0),01111111100(3fc),01000000000000000000(40000)",
         4: Bit.dump(c[1], [32])       === "00000000000000000000000000000000(0)",
         5: Bit.dump(d[0], [1,11,20])  === "1(1),10000000101(405),11011010100000000000(da800)",
