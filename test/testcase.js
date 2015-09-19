@@ -80,25 +80,24 @@ function testBit_split(test, pass, miss) {
         "BYTE":   [8, 8, 8, 8],
         "WORD":   [16, 16],
     };
-    function _join(u32array) {
-        return u32array.join();
-    }
 
     var result = {
         // 32 bit
-        1: _join(Bit.split(0xaaaa5555, BIT_PATTERN.BIT))    === [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+        1: Bit.split(0xaaaa5555, BIT_PATTERN.BIT).join()    === [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
                                                                  0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1].join(),
-        2: _join(Bit.split(0xaaaa5555))                     === [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+        2: Bit.split(0xaaaa5555).join()                     === [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
                                                                  0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1].join(),
-        3: _join(Bit.split(0xabcdef01, BIT_PATTERN.NIBBLE)) === [10,11,12,13,14,15,0,1].join(),
-        4: _join(Bit.split(0xabcdef01, BIT_PATTERN.BYTE))   === [0xab, 0xcd, 0xef, 0x01].join(),
-        5: _join(Bit.split(0xabcdef01, BIT_PATTERN.WORD))   === [0xabcd, 0xef01].join(),
-        6: _join(Bit.split(0x00001234, [16,4,4,4,4]))       === [0x0000, 0x1, 0x2, 0x3, 0x4].join(),
-        7: _join(Bit.split(0xfedc1234, [4,4,4,4,16]))       === [0xf, 0xe, 0xd, 0xc, 0x1234].join(),
-        8: _join(Bit.split(0xfedc1234, [24,8]))             === [0xfedc12, 0x34].join(),
-        9: _join(Bit.split(0xfedc1234, [32]))               === [0xfedc1234].join(),
-       10: _join(Bit.split(0xfedc1234, [0,16]))             === [0,0x1234].join(),
-       20: _join(Bit.split(0xfedc1234, [0]))                === [0].join(),
+        3: Bit.split(0xabcdef01, BIT_PATTERN.NIBBLE).join() === [10,11,12,13,14,15,0,1].join(),
+        4: Bit.split(0xabcdef01, BIT_PATTERN.BYTE).join()   === [0xab, 0xcd, 0xef, 0x01].join(),
+        5: Bit.split(0xabcdef01, BIT_PATTERN.WORD).join()   === [0xabcd, 0xef01].join(),
+        6: Bit.split(0x00001234, [16,4,4,4,4]).join()       === [0x0000, 0x1, 0x2, 0x3, 0x4].join(),
+        7: Bit.split(0xfedc1234, [4,4,4,4,16]).join()       === [0xf, 0xe, 0xd, 0xc, 0x1234].join(),
+        8: Bit.split(0xfedc1234, [24,8]).join()             === [0xfedc12, 0x34].join(),
+        9: Bit.split(0xfedc1234, [32]).join()               === [0xfedc1234].join(),
+       10: Bit.split(0xfedc1234, [0,16]).join()             === [0,0xfedc].join(),
+       11: Bit.split(0xfedc1234, [0,16,16]).join()          === [0,0xfedc,0x1234].join(),
+       12: Bit.split(0xfedc1234, [0,16,16,0]).join()        === [0,0xfedc,0x1234,0].join(),
+       13: Bit.split(0xfedc1234, [4]).join()                === [0xf].join(),
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
