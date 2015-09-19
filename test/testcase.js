@@ -81,10 +81,7 @@ function testBit_split(test, pass, miss) {
         "WORD":   [16, 16],
     };
     function _join(u32array) {
-        if (u32array.join) { // ES6 TypedArray.prototype.join()
-            return u32array.join();
-        }
-        return [].slice.call(u32array).join(); // ES5 polyfill
+        return u32array.join();
     }
 
     var result = {
