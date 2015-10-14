@@ -12,6 +12,7 @@ Bit.js is a JavaScript library that supports the analysis of binary data. It agg
 ```js
 <script src="<module-dir>/lib/WebModule.js"></script>
 <script src="<module-dir>/lib/Bit.js"></script>
+<script src="<module-dir>/lib/BitView.js"></script>
 <script>
 
 // make bit mask
@@ -19,7 +20,16 @@ Bit.mask(2)     // -> 0x03
 Bit.mask(4)     // -> 0x0f
 
 // bit split by bit-pattern
-Bit.split(0xffff1234, [16,4,4,4,4])  // -> [0xffff,0x1,0x2,0x3,0x4]
+Bit.split4(0xffff1234, [16,4,4,4,4])  // -> [0xffff1234, 0xffff, 0x1, 0x2, 0x3, 0x4]
+                                      //     arg value   16bit   4bit 4bit 4bit 4bit
+
+Bit.split3(0xff1234, [16,4,4]) // -> [0xff1234, 0xff, 0x1, 0x2, 0x3, 0x4]
+Bit.split2(0x1234,   [8,8])    // -> [0x1234, 0x12, 0x34]
+Bit.split1(0xfe,     [2,2,4])  // -> [0xfe, 0x3, 0x3, 0xe]
+
+// With ES6 Destructuring Assignment
+var [value, a, b, c] = Bit.split4(0x00001234, [16, 8, 8]);
+// -> value = 0x1234, a = 0x12, b = 0x3, c = 0x4
 
 // population count (counting 1 bits)
 Bit.popcnt(0x6) // -> 2
@@ -31,17 +41,17 @@ Bit.nlz(0x6)    // -> 29
 Bit.ntz(0x6)    // -> 1
 
 // binary dump
-Bit.bin(0x12345678, [4,4,8,4,4,8])
+Bit.dump(0x12345678, [4,4,8,4,4,8]);
 // -> "0001, 0010, 00110100, 0101, 0110, 01111000"
 
-// binary(hex) dump
-Bit.dump(0x12345678, [4,4,8,4,4,8]);
-// -> "0001(1), 0010(2), 00110100(34), 0101(5), 0110(6), 01111000(78)"
+// verbose dump
+Bit.dump(0x12345678, bitPattern, true);
+// -> "00010010001101000101011001111000(0x12345678), 0001(1,0x1), 0010(2,0x2), 00110100(52,0x34), 0101(5,0x5), 0110(6,0x6), 01111000(120,0x78)"
 
-// dump IEEE754 internal format
+// get IEEE754 expression
 var doublePrecision = true;
 var u32array = Bit.IEEE754(0.15625, doublePrecision);
-Bit.bin(u32array[0], [1,11,20]) + Bit.bin(u32array[1], [32])
+Bit.dump(u32array[0], [1,11,20]) + Bit.dump(u32array[1], [32])
 // -> "0, 01111111100, 0100000000000000000000000000000000000000000000000000"
 
 </script>
@@ -52,6 +62,7 @@ Bit.bin(u32array[0], [1,11,20]) + Bit.bin(u32array[1], [32])
 ```js
 importScripts("<module-dir>lib/WebModule.js");
 importScripts("<module-dir>lib/Bit.js");
+importScripts("<module-dir>lib/BitView.js");
 
 ...
 ```
@@ -61,6 +72,7 @@ importScripts("<module-dir>lib/Bit.js");
 ```js
 require("<module-dir>lib/WebModule.js");
 require("<module-dir>lib/Bit.js");
+require("<module-dir>lib/BitView.js");
 
 ...
 ```

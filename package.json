@@ -1,6 +1,6 @@
 {
   "name": "uupaa.bit.js",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Bit operation",
   "url": "https://github.com/uupaa/Bit.js",
   "keywords": ["Bit", "popcnt", "nlz", "ntz", "IEEE754", "uupaa", "WebModule"],
@@ -33,19 +33,19 @@
     "develop": false,
     "label": ["@dev"],
     "browser": {
-      "source": ["lib/Bit.js"],
+      "source": ["lib/Bit.js", "lib/BitView.js"],
       "output": "release/Bit.b.min.js"
     },
     "worker": {
-      "source": ["lib/Bit.js"],
+      "source": ["lib/Bit.js", "lib/BitView.js"],
       "output": "release/Bit.w.min.js"
     },
     "node": {
-      "source": ["lib/Bit.js"],
+      "source": ["lib/Bit.js", "lib/BitView.js"],
       "output": "release/Bit.n.min.js"
     },
     "nw": {
-      "source": ["lib/Bit.js"],
+      "source": ["lib/Bit.js", "lib/BitView.js"],
       "output": "release/Bit.nw.min.js"
     }
   },

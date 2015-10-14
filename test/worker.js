@@ -20,6 +20,7 @@ onmessage = function(event) {
     
     importScripts("wmtools.js");
     importScripts("../lib/Bit.js");
+    importScripts("../lib/BitView.js");
     importScripts("../release/Bit.w.min.js");
     importScripts("testcase.js");
 
