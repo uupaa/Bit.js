@@ -54,6 +54,13 @@ var u32array = Bit.IEEE754(0.15625, doublePrecision);
 Bit.dump(u32array[0], [1,11,20]) + Bit.dump(u32array[1], [32])
 // -> "0, 01111111100, 0100000000000000000000000000000000000000000000000000"
 
+
+// BitView
+var view = new BitView(new Uint8Array([0, 1, 2, 3, 0xFF, 0xFE, 0xFD, 0xFC]));
+
+view.rs4([8,8,8,8])         // -> [0x00010203, 0x00, 0x01, 0x02, 0x03]
+view.rs4([4,4,4,4,4,4,4,4]) // -> [0xFFFEFDFC, 0xF, 0xF, 0xF, 0xE, 0xF, 0xD, 0xF, 0xC]
+
 </script>
 ```
 

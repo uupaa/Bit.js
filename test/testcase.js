@@ -298,10 +298,10 @@ function testBit_BitView(test, pass, miss) {
 
     view.cursor = 0; // reset cursor
 
-    var r1s = view.r1s([4,4]);      // [0x00,       0, 0]
-    var r2s = view.r2s([4,4,4,4]);  // [0x0102,     0, 1, 0, 2]
-    var r3s = view.r3s([8,8,8]);    // [0x030405,   3, 4, 5]
-    var r4s = view.r4s([16,16]);    // [0x06070809, 0x0607, 0x0809]
+    var rs1 = view.rs1([4,4]);      // [0x00,       0, 0]
+    var rs2 = view.rs2([4,4,4,4]);  // [0x0102,     0, 1, 0, 2]
+    var rs3 = view.rs3([8,8,8]);    // [0x030405,   3, 4, 5]
+    var rs4 = view.rs4([16,16]);    // [0x06070809, 0x0607, 0x0809]
 
     var result = {
         "subview1.length": subview1.length === 13,
@@ -313,11 +313,10 @@ function testBit_BitView(test, pass, miss) {
         r3: r3 === 0x030405,
         r4: r4 === 0x06070809,
         cursor: cursor === 10,
-        r1s: r1s.join() === [0x00,       0, 0].join(),
-        r2s: r2s.join() === [0x0102,     0, 1, 0, 2].join(),
-        r3s: r3s.join() === [0x030405,   3, 4, 5].join(),
-        r4s: r4s.join() === [0x06070809, 0x0607, 0x0809].join(),
-
+        rs1: rs1.join() === [0x00,       0, 0].join(),
+        rs2: rs2.join() === [0x0102,     0, 1, 0, 2].join(),
+        rs3: rs3.join() === [0x030405,   3, 4, 5].join(),
+        rs4: rs4.join() === [0x06070809, 0x0607, 0x0809].join(),
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
