@@ -4,10 +4,14 @@
 
 Bit.js is a JavaScript library that supports the analysis of binary data. It aggregates the low-level bit manipulation functions.
 
-- Please refer to [Spec](https://github.com/uupaa/Bit.js/wiki/) and [API Spec](https://github.com/uupaa/Bit.js/wiki/Bit) links.
-- The Bit.js is made of [WebModule](https://github.com/uupaa/WebModule).
 
-## Browser and NW.js(node-webkit)
+This module made of [WebModule](https://github.com/uupaa/WebModule).
+
+## Documentation
+- [Spec](https://github.com/uupaa/Bit.js/wiki/)
+- [API Spec](https://github.com/uupaa/Bit.js/wiki/Bit)
+
+## Browser, NW.js and Electron
 
 ```js
 <script src="<module-dir>/lib/WebModule.js"></script>
@@ -20,16 +24,16 @@ Bit.mask(2)     // -> 0x03
 Bit.mask(4)     // -> 0x0f
 
 // bit split by bit-pattern
-Bit.split4(0xffff1234, [16,4,4,4,4])  // -> [0xffff1234, 0xffff, 0x1, 0x2, 0x3, 0x4]
-                                      //     arg value   16bit   4bit 4bit 4bit 4bit
+Bit.split4(0xffff1234, [16,4,4,4,4])  // -> [0xffff, 0x1, 0x2, 0x3, 0x4]
+                                      //         16    4    4    4    4 bits
 
-Bit.split3(0xff1234, [16,4,4]) // -> [0xff1234, 0xff, 0x1, 0x2, 0x3, 0x4]
-Bit.split2(0x1234,   [8,8])    // -> [0x1234, 0x12, 0x34]
-Bit.split1(0xfe,     [2,2,4])  // -> [0xfe, 0x3, 0x3, 0xe]
+Bit.split3(0xff1234, [16,4,4]) // -> [0xff, 0x1, 0x2, 0x3, 0x4]
+Bit.split2(0x1234,   [8,8])    // -> [0x12, 0x34]
+Bit.split1(0xfe,     [2,2,4])  // -> [0x3, 0x3, 0xe]
 
 // With ES6 Destructuring Assignment
-var [value, a, b, c] = Bit.split4(0x00001234, [16, 8, 8]);
-// -> value = 0x1234, a = 0x12, b = 0x3, c = 0x4
+var [a, b, c] = Bit.split4(0x00001234, [16, 8, 8]);
+// -> a = 0x12, b = 0x3, c = 0x4
 
 // population count (counting 1 bits)
 Bit.popcnt(0x6) // -> 2
@@ -58,8 +62,8 @@ Bit.dump(u32array[0], [1,11,20]) + Bit.dump(u32array[1], [32])
 // BitView
 var view = new BitView(new Uint8Array([0, 1, 2, 3, 0xFF, 0xFE, 0xFD, 0xFC]));
 
-view.rs4([8,8,8,8])         // -> [0x00010203, 0x00, 0x01, 0x02, 0x03]
-view.rs4([4,4,4,4,4,4,4,4]) // -> [0xFFFEFDFC, 0xF, 0xF, 0xF, 0xE, 0xF, 0xD, 0xF, 0xC]
+view.rs4([8,8,8,8])         // -> [0x00, 0x01, 0x02, 0x03]
+view.rs4([4,4,4,4,4,4,4,4]) // -> [0xF, 0xF, 0xF, 0xE, 0xF, 0xD, 0xF, 0xC]
 
 </script>
 ```
