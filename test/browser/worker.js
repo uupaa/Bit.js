@@ -17,7 +17,7 @@ onmessage = function(event) {
     // publish to global
     WebModule.publish = true;
 
-    
+    importScripts("../../node_modules/uupaa.expgolomb.js/lib/ExpGolomb.js");
     importScripts("../wmtools.js");
     importScripts("../../lib/Bit.js");
     importScripts("../../lib/BitView.js");
