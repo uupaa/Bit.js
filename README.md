@@ -24,15 +24,15 @@ Bit.mask(2)     // -> 0x03
 Bit.mask(4)     // -> 0x0f
 
 // bit split by bit-pattern
-Bit.split4(0xffff1234, [16,4,4,4,4])  // -> [0xffff, 0x1, 0x2, 0x3, 0x4]
-                                      //         16    4    4    4    4 bits
+Bit.split32(0xffff1234, [16,4,4,4,4])  // -> [0xffff, 0x1, 0x2, 0x3, 0x4]
+                                       //         16    4    4    4    4 bits
 
-Bit.split3(0xff1234, [16,4,4]) // -> [0xff, 0x1, 0x2, 0x3, 0x4]
-Bit.split2(0x1234,   [8,8])    // -> [0x12, 0x34]
-Bit.split1(0xfe,     [2,2,4])  // -> [0x3, 0x3, 0xe]
+Bit.split24(0xff1234, [16,4,4]) // -> [0xff, 0x1, 0x2, 0x3, 0x4]
+Bit.split16(0x1234,   [8,8])    // -> [0x12, 0x34]
+Bit.split8(0xfe,      [2,2,4])  // -> [0x3, 0x3, 0xe]
 
 // With ES6 Destructuring Assignment
-var [a, b, c] = Bit.split4(0x00001234, [16, 8, 8]);
+var [a, b, c] = Bit.split32(0x00001234, [16, 8, 8]);
 // -> a = 0x12, b = 0x3, c = 0x4
 
 // population count (counting 1 bits)
@@ -60,10 +60,25 @@ Bit.dump(u32array[0], [1,11,20]) + Bit.dump(u32array[1], [32])
 
 
 // BitView
-var view = new BitView(new Uint8Array([0, 1, 2, 3, 0xFF, 0xFE, 0xFD, 0xFC]));
+var bitView = new BitView(new Uint8Array([0, 1, 2, 3, 0xFF, 0xFE, 0xFD, 0xFC]));
 
-view.rs4([8,8,8,8])         // -> [0x00, 0x01, 0x02, 0x03]
-view.rs4([4,4,4,4,4,4,4,4]) // -> [0xF, 0xF, 0xF, 0xE, 0xF, 0xD, 0xF, 0xC]
+                    // read 32 bit
+bitView.u32         // -> 0x00010203
+
+                    // read 24 bit
+bitView.u24         // -> 0xFFFEFD
+
+                    // read 1 bit
+bitView.u1          // -> 0x1  `11111100` (0xFC)
+                    //          ~
+
+                    // read 2 bit
+bitView.u2          // -> 0x3  `11111100` (0xFC)
+                    //           ~~
+
+                    // read 5 bit
+bitView.u5          // -> 0x1C `11111100` (0xFC)
+                    //             ~~~~~
 
 </script>
 ```
