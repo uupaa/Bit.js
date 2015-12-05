@@ -31,8 +31,9 @@ var test = new Test("Bit", {
         testBit_BitView_nu_bitCursor5,
         testBit_BitView_nu_1_to_32,
         testBit_BitView_u,
-        testBit_BitViewGolomb,
-        testBit_BitViewGolombSigned,
+        testBit_BitView_ug,
+        testBit_BitView_sg,
+        testBit_BitView_EOS,
     ]);
 
 if (IN_BROWSER || IN_NW || IN_EL) {
@@ -519,7 +520,7 @@ function testBit_BitView_nu_1_to_32(test, pass, miss) {
     }
 }
 
-function testBit_BitViewGolomb(test, pass, miss) {
+function testBit_BitView_ug(test, pass, miss) {
     var source = [131072, 65536, 32768, 16384, 1024];
     var bits = ExpGolomb.encode(source[0]) +
                ExpGolomb.encode(source[1]) +
@@ -553,7 +554,7 @@ function testBit_BitViewGolomb(test, pass, miss) {
     }
 }
 
-function testBit_BitViewGolombSigned(test, pass, miss) {
+function testBit_BitView_sg(test, pass, miss) {
     var source = [-131072, -65536, -32768, -16384, -1024];
     var signed = true;
     var bits = ExpGolomb.encode(source[0], signed) +
@@ -581,6 +582,28 @@ function testBit_BitViewGolombSigned(test, pass, miss) {
         sg5: sg5 === source[4],
     };
 
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_BitView_EOS(test, pass, miss) {
+    var bv = new BitView(new Uint8Array([0,1]));
+
+    bv.u(8);
+    var a = bv.EOS; // -> false
+    bv.u(8);
+    var b = bv.EOS; // -> true
+    bv.u(8);
+    var c = bv.EOS; // -> true
+
+    var result = {
+        a: a === false,
+        b: b === true,
+        c: c === true,
+    };
     if ( /false/.test(JSON.stringify(result)) ) {
         test.done(miss());
     } else {
