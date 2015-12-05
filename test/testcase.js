@@ -26,8 +26,11 @@ var test = new Test("Bit", {
         testBit_dump,
         testBit_IEEE754,
         testBit_BitView_bytes,
+        testBit_BitView_nu_bitCursor7,
+        testBit_BitView_nu_bitCursor6,
+        testBit_BitView_nu_bitCursor5,
+        testBit_BitView_nu_1_to_32,
         testBit_BitView_u,
-        testBit_BitView_nu,
         testBit_BitViewGolomb,
         testBit_BitViewGolombSigned,
     ]);
@@ -293,10 +296,10 @@ function testBit_BitView_bytes(test, pass, miss) {
     var cursor = 0;
     var bv = new BitView(source, cursor);
 
-    var r1 = bv.u8;
-    var r2 = bv.u16;
-    var r3 = bv.u24;
-    var r4 = bv.u32;
+    var r1 = bv.u(8);
+    var r2 = bv.u(16);
+    var r3 = bv.u(24);
+    var r4 = bv.u(32);
     var cursor = bv.cursor; // 10
 
     bv.cursor = 0; // reset cursor
@@ -318,29 +321,29 @@ function testBit_BitView_bytes(test, pass, miss) {
 function testBit_BitView_u(test, pass, miss) {
     var bv = new BitView(new Uint8Array([0x11,     0x77,     0xCC,     0x00]));
                                      // `00010001``01110111``11001100``00000000`
-    var u1 = bv.u1; // `0`               ~
-    var u2 = bv.u2; // `00`               ~~
-    var u3 = bv.u3; // `100`                ~~~
-    var u4 = bv.u4; // `01``01`                ~~  ~~
-    var u5 = bv.u5; // `11011`                       ~~~~~
-    var u6 = bv.u6; // `1``11001`                         ~  ~~~~~
-    var u7 = bv.u7; // `100``0000`                                ~~~  ~~~~
-    var u8 = bv.u8; // `0000``0000(undefined)`
+    var u1 = bv.u(1); // `0`               ~
+    var u2 = bv.u(2); // `00`               ~~
+    var u3 = bv.u(3); // `100`                ~~~
+    var u4 = bv.u(4); // `01``01`                ~~  ~~
+    var u5 = bv.u(5); // `11011`                       ~~~~~
+    var u6 = bv.u(6); // `1``11001`                         ~  ~~~~~
+    var u7 = bv.u(7); // `100``0000`                                ~~~  ~~~~
+    var u8 = bv.u(8); // `0000``0000(undefined)`
 
     bv.cursor = 0;
     bv.bitCursor = 7;
 
-    var u16 = bv.u16;
+    var u16 = bv.u(16);
 
     bv.cursor = 0;
     bv.bitCursor = 7;
 
-    var u24 = bv.u24;
+    var u24 = bv.u(24);
 
     bv.cursor = 0;
     bv.bitCursor = 7;
 
-    var u32 = bv.u32;
+    var u32 = bv.u(32);
 
     var result = {
         u1: u1 === parseInt("0", 2),
@@ -363,7 +366,7 @@ function testBit_BitView_u(test, pass, miss) {
     }
 }
 
-function testBit_BitView_nu(test, pass, miss) {
+function testBit_BitView_nu_bitCursor7(test, pass, miss) {
     var bv = new BitView(new Uint8Array([    0x91,    0x77,    0xCC,    0x07]));
                                          // `10010001 01110111 11001100 00000111`
     var nu1  = bv.nu(1);  // `1`             ~
@@ -379,19 +382,6 @@ function testBit_BitView_nu(test, pass, miss) {
     var nu16 = bv.nu(16); // `1001000101110111`
     var nu23 = bv.nu(23); // `10010001011101111100110`
 
-    // --- getter ---
-    var g_nu1  = bv.nu1;
-    var g_nu2  = bv.nu2;
-    var g_nu3  = bv.nu3;
-    var g_nu4  = bv.nu4;
-    var g_nu5  = bv.nu5;
-    var g_nu6  = bv.nu6;
-    var g_nu7  = bv.nu7;
-    var g_nu8  = bv.nu8;
-    var g_nu16 = bv.nu16;
-    var g_nu24 = bv.nu24;
-    var g_nu32 = bv.nu32;
-
     var result = {
         nu1:  nu1  === parseInt("1", 2),
         nu2:  nu2  === parseInt("10", 2),
@@ -405,17 +395,6 @@ function testBit_BitView_nu(test, pass, miss) {
         nu15: nu15 === parseInt("100100010111011", 2),
         nu16: nu16 === parseInt("1001000101110111", 2),
         nu23: nu23 === parseInt("10010001011101111100110", 2),
-        g_nu1 : nu1  === g_nu1,
-        g_nu2 : nu2  === g_nu2,
-        g_nu3 : nu3  === g_nu3,
-        g_nu4 : nu4  === g_nu4,
-        g_nu5 : nu5  === g_nu5,
-        g_nu6 : nu6  === g_nu6,
-        g_nu7 : nu7  === g_nu7,
-        g_nu8 : nu8  === g_nu8,
-        g_nu16: nu16 === g_nu16,
-        g_nu24: g_nu24 === parseInt("100100010111011111001100", 2),
-        g_nu32: g_nu32 === parseInt("10010001011101111100110000000111", 2),
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
@@ -425,6 +404,120 @@ function testBit_BitView_nu(test, pass, miss) {
     }
 }
 
+function testBit_BitView_nu_bitCursor6(test, pass, miss) {
+    var bv = new BitView(new Uint8Array([    0x91,    0x77,    0xCC,    0x07]));
+                                         // `10010001 01110111 11001100 00000111`
+                                         // 145       119      204      7
+    bv.bitCursor = 6;
+
+    var nu1  = bv.nu(1);  // `0`            ~~
+    var nu2  = bv.nu(2);  // `00`           ~~~ 
+    var nu3  = bv.nu(3);  // `001`          ~~~~ 
+    var nu4  = bv.nu(4);  // `0010`         ~~~~~ 
+    var nu5  = bv.nu(5);  // `00100`        ~~~~~~ 
+    var nu6  = bv.nu(6);  // `001000`       ~~~~~~~ 
+    var nu7  = bv.nu(7);  // `0010001`      ~~~~~~~~ 
+    var nu8  = bv.nu(8);  // `00100010`     ~~~~~~~~ ~ 
+    var nu9  = bv.nu(9);  // `001000101`
+    var nu15 = bv.nu(15); // `001000101110111`
+    var nu16 = bv.nu(16); // `0010001011101111`
+    var nu23 = bv.nu(23); // `00100010111011111001100`
+
+    var result = {
+        nu1:  nu1  === parseInt("0", 2),
+        nu2:  nu2  === parseInt("00", 2),
+        nu3:  nu3  === parseInt("001", 2),
+        nu4:  nu4  === parseInt("0010", 2),
+        nu5:  nu5  === parseInt("00100", 2),
+        nu6:  nu6  === parseInt("001000", 2),
+        nu7:  nu7  === parseInt("0010001", 2),
+        nu8:  nu8  === parseInt("00100010", 2),
+        nu9:  nu9  === parseInt("001000101", 2),
+        nu15: nu15 === parseInt("001000101110111", 2),
+        nu16: nu16 === parseInt("0010001011101111", 2),
+        nu23: nu23 === parseInt("00100010111011111001100", 2),
+    };
+
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_BitView_nu_bitCursor5(test, pass, miss) {
+    var bv = new BitView(new Uint8Array([    0x91,    0x77,    0xCC,    0x07]));
+                                         // `10010001 01110111 11001100 00000111`
+                                         // 145       119      204      7
+    bv.bitCursor = 5;
+
+    var nu1  = bv.nu(1);  // `0`
+    var nu2  = bv.nu(2);  // `01`
+    var nu3  = bv.nu(3);  // `010`
+    var nu4  = bv.nu(4);  // `0100`
+    var nu5  = bv.nu(5);  // `01000`
+    var nu6  = bv.nu(6);  // `010001`
+    var nu7  = bv.nu(7);  // `0100010`
+    var nu8  = bv.nu(8);  // `01000101`
+    var nu9  = bv.nu(9);  // `010001011`
+    var nu15 = bv.nu(15); // `010001011101111`
+    var nu16 = bv.nu(16); // `0100010111011111`
+    var nu23 = bv.nu(23); // `01000101110111110011000`
+
+    var result = {
+        nu1:  nu1  === parseInt("0", 2),
+        nu2:  nu2  === parseInt("01", 2),
+        nu3:  nu3  === parseInt("010", 2),
+        nu4:  nu4  === parseInt("0100", 2),
+        nu5:  nu5  === parseInt("01000", 2),
+        nu6:  nu6  === parseInt("010001", 2),
+        nu7:  nu7  === parseInt("0100010", 2),
+        nu8:  nu8  === parseInt("01000101", 2),
+        nu9:  nu9  === parseInt("010001011", 2),
+        nu15: nu15 === parseInt("010001011101111", 2),
+        nu16: nu16 === parseInt("0100010111011111", 2),
+        nu23: nu23 === parseInt("01000101110111110011000", 2),
+    };
+
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_BitView_nu_1_to_32(test, pass, miss) {
+    var bv = new BitView(new Uint8Array([0xcc, 0x77, 0xdd, 0xcc]));
+
+    var result = {
+         1: bv.nu(1)  === parseInt("1", 2),
+         2: bv.nu(2)  === parseInt("11", 2),
+         3: bv.nu(3)  === parseInt("110", 2),
+         4: bv.nu(4)  === parseInt("1100", 2),
+         5: bv.nu(5)  === parseInt("11001", 2),
+         6: bv.nu(6)  === parseInt("110011", 2),
+         7: bv.nu(7)  === parseInt("1100110", 2),
+         8: bv.nu(8)  === parseInt("11001100", 2),
+         9: bv.nu(9)  === parseInt("11001100" + "0", 2),
+        10: bv.nu(10) === parseInt("11001100" + "01", 2),
+        11: bv.nu(11) === parseInt("11001100" + "011", 2),
+        12: bv.nu(12) === parseInt("11001100" + "0111", 2),
+        13: bv.nu(13) === parseInt("11001100" + "01110", 2),
+        14: bv.nu(14) === parseInt("11001100" + "011101", 2),
+        15: bv.nu(15) === parseInt("11001100" + "0111011", 2),
+        16: bv.nu(16) === parseInt("11001100" + "01110111", 2),
+        23: bv.nu(23) === parseInt("11001100" + "01110111" + "1101110", 2),
+        24: bv.nu(24) === parseInt("11001100" + "01110111" + "11011101", 2),
+        31: bv.nu(31) === parseInt("11001100" + "01110111" + "11011101" + "1100110", 2),
+        32: bv.nu(32) === parseInt("11001100" + "01110111" + "11011101" + "11001100", 2),
+    };
+
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
 
 function testBit_BitViewGolomb(test, pass, miss) {
     var source = [131072, 65536, 32768, 16384, 1024];
@@ -439,11 +532,11 @@ function testBit_BitViewGolomb(test, pass, miss) {
     }
 
     var bv = new BitView(new Uint8Array(bytes));
-    var ug1 = bv.ug;
-    var ug2 = bv.ug;
-    var ug3 = bv.ug;
-    var ug4 = bv.ug;
-    var ug5 = bv.ug;
+    var ug1 = bv.ug();
+    var ug2 = bv.ug();
+    var ug3 = bv.ug();
+    var ug4 = bv.ug();
+    var ug5 = bv.ug();
 
     var result = {
         ug1: ug1 === source[0],
@@ -474,18 +567,18 @@ function testBit_BitViewGolombSigned(test, pass, miss) {
     }
 
     var bv = new BitView(new Uint8Array(bytes));
-    var ug1 = bv.sg;
-    var ug2 = bv.sg;
-    var ug3 = bv.sg;
-    var ug4 = bv.sg;
-    var ug5 = bv.sg;
+    var sg1 = bv.sg();
+    var sg2 = bv.sg();
+    var sg3 = bv.sg();
+    var sg4 = bv.sg();
+    var sg5 = bv.sg();
 
     var result = {
-        ug1: ug1 === source[0],
-        ug2: ug2 === source[1],
-        ug3: ug3 === source[2],
-        ug4: ug4 === source[3],
-        ug5: ug5 === source[4],
+        sg1: sg1 === source[0],
+        sg2: sg2 === source[1],
+        sg3: sg3 === source[2],
+        sg4: sg4 === source[3],
+        sg5: sg5 === source[4],
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
@@ -494,8 +587,6 @@ function testBit_BitViewGolombSigned(test, pass, miss) {
         test.done(pass());
     }
 }
-
-
 
 return test.run();
 
