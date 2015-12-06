@@ -33,6 +33,7 @@ var test = new Test("Bit", {
         testBit_BitView_u,
         testBit_BitView_ug,
         testBit_BitView_sg,
+        testBit_BitView_sg_zero,
         testBit_BitView_EOS,
     ]);
 
@@ -580,6 +581,32 @@ function testBit_BitView_sg(test, pass, miss) {
         sg3: sg3 === source[2],
         sg4: sg4 === source[3],
         sg5: sg5 === source[4],
+    };
+
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_BitView_sg_zero(test, pass, miss) {
+    var source = [0, -0];
+    var signed = true;
+    var bits = ExpGolomb.encode(source[0], signed) +
+               ExpGolomb.encode(source[1], signed) + "00000000000000000000000000000000";
+    var bytes = [];
+    for (var i = 0, iz = ((bits.length / 8) | 0) * 8; i < iz; i += 8) {
+        bytes.push(parseInt(bits.slice(i, i + 8), 2));
+    }
+
+    var bv = new BitView(new Uint8Array(bytes));
+    var sg1 = bv.sg();
+    var sg2 = bv.sg();
+
+    var result = {
+        sg1: sg1 === source[0],
+        sg2: sg2 === source[1],
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {

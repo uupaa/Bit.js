@@ -1,6 +1,6 @@
 {
   "name": "uupaa.bit.js",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Bit operation",
   "url": "https://github.com/uupaa/Bit.js",
   "keywords": ["Bit", "BitView", "popcnt", "nlz", "ntz", "IEEE754", "Golomb", "uupaa", "WebModule"],
