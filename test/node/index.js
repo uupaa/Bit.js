@@ -2,7 +2,8 @@
 
 require("../../lib/WebModule.js");
 
-// publish to global
+WebModule.verify  = true;
+WebModule.verbose = true;
 WebModule.publish = true;
 
 require("../../node_modules/uupaa.expgolomb.js/lib/ExpGolomb.js");

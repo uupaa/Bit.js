@@ -1,8 +1,6 @@
 var ModuleTestBit = (function(global) {
 
-global["BENCHMARK"] = false;
-
-var test = new Test("Bit", {
+var test = new Test(["Bit"], { // Add the ModuleName to be tested here (if necessary).
         disable:    false, // disable all tests.
         browser:    true,  // enable browser test.
         worker:     true,  // enable worker test.
@@ -17,7 +15,10 @@ var test = new Test("Bit", {
         errorback:  function(error) {
             console.error(error.message);
         }
-    }).add([
+    });
+
+if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
+    test.add([
         testBit_mask,
         testBit_split,
         testBit_popcnt,
@@ -35,19 +36,10 @@ var test = new Test("Bit", {
         testBit_BitView_sg,
         testBit_BitView_sg_zero,
         testBit_BitView_EOS,
-    ]);
-
-if (IN_BROWSER || IN_NW || IN_EL) {
-    test.add([
-        // Browser, NW.js and Electron test
-    ]);
-} else if (IN_WORKER) {
-    test.add([
-        // WebWorkers test
-    ]);
-} else if (IN_NODE) {
-    test.add([
-        // Node.js test
+        // --- reverse bit ---
+        testBit_BitView_reverse8,
+        testBit_BitView_reverse16,
+        testBit_BitView_reverse32,
     ]);
 }
 
@@ -630,6 +622,42 @@ function testBit_BitView_EOS(test, pass, miss) {
         a: a === false,
         b: b === true,
         c: c === true,
+    };
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_BitView_reverse8(test, pass, miss) {
+    var result = {
+        a: Bit.reverse8(0b00001110) === 0b01110000, // 0b00001110 -> 0b01110000
+        b: Bit.reverse8(0b00000010) === 0b01000000, // 0b00000010 -> 0b01000000
+    };
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_BitView_reverse16(test, pass, miss) {
+    var result = {
+        a: Bit.reverse16(0b0000000011100000) === 0b0000011100000000, // 0b0000000011100000 -> 0b0000011100000000
+        b: Bit.reverse16(0b0000000000100000) === 0b0000010000000000, // 0b0000000000100000 -> 0b0000010000000000
+    };
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_BitView_reverse32(test, pass, miss) {
+    var result = {
+        a: Bit.reverse32(0b11100000000000000000000000001111) === 0b11110000000000000000000000000111,
+        b: Bit.reverse32(0b00010001000100010001000100010001) === 0b10001000100010001000100010001000,
     };
     if ( /false/.test(JSON.stringify(result)) ) {
         test.done(miss());

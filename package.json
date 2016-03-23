@@ -1,9 +1,9 @@
 {
   "name": "uupaa.bit.js",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Bit operation",
   "url": "https://github.com/uupaa/Bit.js",
-  "keywords": ["Bit", "BitView", "popcnt", "nlz", "ntz", "IEEE754", "Golomb", "uupaa", "WebModule"],
+  "keywords": ["Bit", "BitView", "reverse", "MSB", "LSB", "popcnt", "nlz", "ntz", "IEEE754", "Golomb", "uupaa", "WebModule"],
   "repository": {
     "type": "git",
     "url": "https://github.com/uupaa/Bit.js.git"
@@ -22,6 +22,7 @@
     "el": "electron test/el",
     "nw": "nw test/nw",
     "add-src": "node ../WebModule/run/add-src.js",
+    "add-subclass": "node ../WebModule/run/add-subclass.js",
     "sim": "node ../WebModule/run/sim.js http://localhost:8000/Bit.js/test/browser/index.html",
     "simx": "node ../WebModule/run/sim.js stop",
     "lint": "eslint lib/*.js",
@@ -35,24 +36,39 @@
     "develop": false,
     "label": ["@dev"],
     "browser": {
-      "source": ["lib/Bit.js", "lib/BitView.js"],
-      "output": "release/Bit.b.min.js"
+      "output": "release/Bit.b.min.js",
+      "source": [
+        "lib/Bit.js",
+        "lib/BitView.js"
+      ]
     },
     "worker": {
-      "source": ["lib/Bit.js", "lib/BitView.js"],
-      "output": "release/Bit.w.min.js"
+      "output": "release/Bit.w.min.js",
+      "source": [
+        "lib/Bit.js",
+        "lib/BitView.js"
+      ]
     },
     "node": {
-      "source": ["lib/Bit.js", "lib/BitView.js"],
-      "output": "release/Bit.n.min.js"
+      "output": "release/Bit.n.min.js",
+      "source": [
+        "lib/Bit.js",
+        "lib/BitView.js"
+      ]
     },
     "nw": {
-      "source": ["lib/Bit.js", "lib/BitView.js"],
-      "output": "release/Bit.nw.min.js"
+      "output": "release/Bit.nw.min.js",
+      "source": [
+        "lib/Bit.js",
+        "lib/BitView.js"
+      ]
     },
     "el": {
-      "source": ["lib/Bit.js", "lib/BitView.js"],
-      "output": "release/Bit.el.min.js"
+      "output": "release/Bit.el.min.js",
+      "source": [
+        "lib/Bit.js",
+        "lib/BitView.js"
+      ]
     }
   },
   "dependencies": {},
