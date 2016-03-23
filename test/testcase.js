@@ -646,6 +646,8 @@ function testBit_BitView_reverse16(test, pass, miss) {
     var result = {
         a: Bit.reverse16(0b0000000011100000) === 0b0000011100000000, // 0b0000000011100000 -> 0b0000011100000000
         b: Bit.reverse16(0b0000000000100000) === 0b0000010000000000, // 0b0000000000100000 -> 0b0000010000000000
+        c: Bit.reverse16(0b0001000000100001) === 0b1000010000001000, // 0x1021 -> 0x8408
+        c: Bit.reverse16(0b0001000000100001) === 0b1000010000001000, // 0x1021 -> 0x8408
     };
     if ( /false/.test(JSON.stringify(result)) ) {
         test.done(miss());
