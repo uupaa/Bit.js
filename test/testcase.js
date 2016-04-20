@@ -19,8 +19,8 @@ var test = new Test(["Bit"], { // Add the ModuleName to be tested here (if neces
 
 if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
     test.add([
-        testBit_mask,
-        testBit_mask_verify_error,
+        testBit_n,
+        testBit_n_verify_error,
         testBit_contig,
         testBit_split,
         testBit_reverse,
@@ -43,14 +43,14 @@ if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
 }
 
 // --- test cases ------------------------------------------
-function testBit_mask(test, pass, miss) {
+function testBit_n(test, pass, miss) {
     var result = {
-        1: Bit.mask(0x000000ff, 0b00000000000000000000000011111100) === 0x3f,
-        2: Bit.mask(0x000000ff, 0b00000000000000000000000011000000) === 0x03,
-        3: Bit.mask(0x0000ffff, 0b00000000000000000111111000000000) === 0x3f,
-        4: Bit.mask(0x0000ffff, 0b00000000000000001100000000000000) === 0x03,
-        5: Bit.mask(0xffffffff, 0b01111110000000000000000000000000) === 0x3f,
-        6: Bit.mask(0xffffffff, 0b11000000000000000000000000000000) === 0x03,
+        1: Bit.n(0x000000ff, 0b00000000000000000000000011111100) === 0x3f,
+        2: Bit.n(0x000000ff, 0b00000000000000000000000011000000) === 0x03,
+        3: Bit.n(0x0000ffff, 0b00000000000000000111111000000000) === 0x3f,
+        4: Bit.n(0x0000ffff, 0b00000000000000001100000000000000) === 0x03,
+        5: Bit.n(0xffffffff, 0b01111110000000000000000000000000) === 0x3f,
+        6: Bit.n(0xffffffff, 0b11000000000000000000000000000000) === 0x03,
     };
     if ( /false/.test(JSON.stringify(result)) ) {
         test.done(miss());
@@ -59,9 +59,9 @@ function testBit_mask(test, pass, miss) {
     }
 }
 
-function testBit_mask_verify_error(test, pass, miss) {
+function testBit_n_verify_error(test, pass, miss) {
     try {
-        Bit.mask(0x000000ff, 0b101); // -> validation error --> throw
+        Bit.n(0x000000ff, 0b101); // -> validation error --> throw
         test.done(miss());
     } catch (o_o) {
         test.done(pass());

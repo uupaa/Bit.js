@@ -19,9 +19,9 @@ This module made of [WebModule](https://github.com/uupaa/WebModule).
 <script src="<module-dir>/lib/BitView.js"></script>
 <script>
 
-// make bit mask
-Bit.mask(2)     // -> 0x03
-Bit.mask(4)     // -> 0x0f
+// get contiguous n bits.
+Bit.n(0x000000ff, 0b00000000000000000000000011111100) // -> 0x3f,
+Bit.n(0x000000ff, 0b00000000000000000000000011000000) // -> 0x03,
 
 // bit split by bit-pattern
 Bit.split32(0xffff1234, [16,4,4,4,4])  // -> [0xffff, 0x1, 0x2, 0x3, 0x4]
@@ -38,11 +38,17 @@ var [a, b, c] = Bit.split32(0x00001234, [16, 8, 8]);
 // population count (counting 1 bits)
 Bit.popcnt(0x6) // -> 2
 
-// Number of Leading Zero
-Bit.nlz(0x6)    // -> 29
+// Count the number of contiguous 1 bits
+Bit.contig(0b00111100) // -> 4
+Bit.contig(0b00000100) // -> 1
 
-// Number of Training Zero
+// Number(Count) of Leading Zero
+Bit.nlz(0x6)    // -> 29
+Bit.clz(0x6)    // -> 29 (this function is an alias of Bit.nlz)
+
+// Number(Count) of Training Zero
 Bit.ntz(0x6)    // -> 1
+Bit.ctz(0x6)    // -> 1 (this function is an alias of Bit.ntz)
 
 // binary dump
 Bit.dump(0x12345678, [4,4,8,4,4,8]);
