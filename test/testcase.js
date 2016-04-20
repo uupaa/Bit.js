@@ -20,7 +20,10 @@ var test = new Test(["Bit"], { // Add the ModuleName to be tested here (if neces
 if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
     test.add([
         testBit_mask,
+        testBit_mask_verify_error,
+        testBit_contig,
         testBit_split,
+        testBit_reverse,
         testBit_popcnt,
         testBit_nlz,
         testBit_ntz,
@@ -36,37 +39,50 @@ if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
         testBit_BitView_sg,
         testBit_BitView_sg_zero,
         testBit_BitView_EOS,
-        // --- reverse bit ---
-        testBit_BitView_reverse8,
-        testBit_BitView_reverse16,
-        testBit_BitView_reverse32,
     ]);
 }
 
 // --- test cases ------------------------------------------
 function testBit_mask(test, pass, miss) {
     var result = {
-        1: Bit.mask(0)  === 0x0000,
-        2: Bit.mask(1)  === 0x0001,
-        3: Bit.mask(2)  === 0x0003,
-        4: Bit.mask(3)  === 0x0007,
-        5: Bit.mask(4)  === 0x000f,
-        6: Bit.mask(5)  === 0x001f,
-        7: Bit.mask(6)  === 0x003f,
-        8: Bit.mask(7)  === 0x007f,
-        9: Bit.mask(8)  === 0x00ff,
-       10: Bit.mask(9)  === 0x01ff,
-       11: Bit.mask(10) === 0x03ff,
-       12: Bit.mask(11) === 0x07ff,
-       13: Bit.mask(12) === 0x0fff,
-       14: Bit.mask(13) === 0x1fff,
-       15: Bit.mask(14) === 0x3fff,
-       16: Bit.mask(15) === 0x7fff,
-       17: Bit.mask(16) === 0xffff,
-       18: Bit.mask(31) === 0x7fffffff,
-       19: Bit.mask(32) === 0xffffffff,
+        1: Bit.mask(0x000000ff, 0b00000000000000000000000011111100) === 0x3f,
+        2: Bit.mask(0x000000ff, 0b00000000000000000000000011000000) === 0x03,
+        3: Bit.mask(0x0000ffff, 0b00000000000000000111111000000000) === 0x3f,
+        4: Bit.mask(0x0000ffff, 0b00000000000000001100000000000000) === 0x03,
+        5: Bit.mask(0xffffffff, 0b01111110000000000000000000000000) === 0x3f,
+        6: Bit.mask(0xffffffff, 0b11000000000000000000000000000000) === 0x03,
     };
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
 
+function testBit_mask_verify_error(test, pass, miss) {
+    try {
+        Bit.mask(0x000000ff, 0b101); // -> validation error --> throw
+        test.done(miss());
+    } catch (o_o) {
+        test.done(pass());
+    }
+}
+
+function testBit_contig(test, pass, miss) {
+    var result = {
+        1: Bit.contig(0b11111100) === 6,
+        2: Bit.contig(0b11000000) === 2,
+        3: Bit.contig(0b0111111110000000) === 8,
+        4: Bit.contig(0b0000000000000000) === 0,
+        5: Bit.contig(0b01111111111111111111111111111111) === 31,
+        6: Bit.contig(0b11000000000000000000000000000000) === 2,
+        7: Bit.contig(0x0) === 0,
+        8: Bit.contig(0x1) === 1,
+        9: Bit.contig(0x2) === 1,
+       10: Bit.contig(0x3) === 2,
+       11: Bit.contig(0x7fffffff) === 31,
+       12: Bit.contig(0xffffffff) === 32,
+    };
     if ( /false/.test(JSON.stringify(result)) ) {
         test.done(miss());
     } else {
@@ -154,6 +170,24 @@ function testBit_split(test, pass, miss) {
       322: Bit.split8(0xffffff78, [4,32,0]).join()             === [0x7, 0x8,0].join(),
     };
 
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_reverse(test, pass, miss) {
+    var result = {
+        1: Bit.reverse8(0b00001110) === 0b01110000, // 0b00001110 -> 0b01110000
+        2: Bit.reverse8(0b00000010) === 0b01000000, // 0b00000010 -> 0b01000000
+        3: Bit.reverse16(0b0000000011100000) === 0b0000011100000000, // 0b0000000011100000 -> 0b0000011100000000
+        4: Bit.reverse16(0b0000000000100000) === 0b0000010000000000, // 0b0000000000100000 -> 0b0000010000000000
+        5: Bit.reverse16(0b0001000000100001) === 0b1000010000001000, // 0x1021 -> 0x8408
+        6: Bit.reverse16(0b0001000000100001) === 0b1000010000001000, // 0x1021 -> 0x8408
+        7: Bit.reverse32(0b11100000000000000000000000001111) === 0b11110000000000000000000000000111,
+        8: Bit.reverse32(0b00010001000100010001000100010001) === 0b10001000100010001000100010001000,
+    };
     if ( /false/.test(JSON.stringify(result)) ) {
         test.done(miss());
     } else {
@@ -622,44 +656,6 @@ function testBit_BitView_EOS(test, pass, miss) {
         a: a === false,
         b: b === true,
         c: c === true,
-    };
-    if ( /false/.test(JSON.stringify(result)) ) {
-        test.done(miss());
-    } else {
-        test.done(pass());
-    }
-}
-
-function testBit_BitView_reverse8(test, pass, miss) {
-    var result = {
-        a: Bit.reverse8(0b00001110) === 0b01110000, // 0b00001110 -> 0b01110000
-        b: Bit.reverse8(0b00000010) === 0b01000000, // 0b00000010 -> 0b01000000
-    };
-    if ( /false/.test(JSON.stringify(result)) ) {
-        test.done(miss());
-    } else {
-        test.done(pass());
-    }
-}
-
-function testBit_BitView_reverse16(test, pass, miss) {
-    var result = {
-        a: Bit.reverse16(0b0000000011100000) === 0b0000011100000000, // 0b0000000011100000 -> 0b0000011100000000
-        b: Bit.reverse16(0b0000000000100000) === 0b0000010000000000, // 0b0000000000100000 -> 0b0000010000000000
-        c: Bit.reverse16(0b0001000000100001) === 0b1000010000001000, // 0x1021 -> 0x8408
-        c: Bit.reverse16(0b0001000000100001) === 0b1000010000001000, // 0x1021 -> 0x8408
-    };
-    if ( /false/.test(JSON.stringify(result)) ) {
-        test.done(miss());
-    } else {
-        test.done(pass());
-    }
-}
-
-function testBit_BitView_reverse32(test, pass, miss) {
-    var result = {
-        a: Bit.reverse32(0b11100000000000000000000000001111) === 0b11110000000000000000000000000111,
-        b: Bit.reverse32(0b00010001000100010001000100010001) === 0b10001000100010001000100010001000,
     };
     if ( /false/.test(JSON.stringify(result)) ) {
         test.done(miss());
