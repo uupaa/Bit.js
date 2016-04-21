@@ -21,7 +21,8 @@ if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
     test.add([
         testBit_n,
         testBit_n_verify_error,
-        testBit_contig,
+        testBit_cnl,
+        testBit_cnr,
         testBit_split,
         testBit_reverse,
         testBit_popcnt,
@@ -68,20 +69,56 @@ function testBit_n_verify_error(test, pass, miss) {
     }
 }
 
-function testBit_contig(test, pass, miss) {
+function testBit_cnl(test, pass, miss) {
     var result = {
-        1: Bit.contig(0b11111100) === 6,
-        2: Bit.contig(0b11000000) === 2,
-        3: Bit.contig(0b0111111110000000) === 8,
-        4: Bit.contig(0b0000000000000000) === 0,
-        5: Bit.contig(0b01111111111111111111111111111111) === 31,
-        6: Bit.contig(0b11000000000000000000000000000000) === 2,
-        7: Bit.contig(0x0) === 0,
-        8: Bit.contig(0x1) === 1,
-        9: Bit.contig(0x2) === 1,
-       10: Bit.contig(0x3) === 2,
-       11: Bit.contig(0x7fffffff) === 31,
-       12: Bit.contig(0xffffffff) === 32,
+        1: Bit.cnl(0b001) === 1,
+        2: Bit.cnl(0b010) === 1,
+        3: Bit.cnl(0b011) === 2,
+        4: Bit.cnl(0b100) === 1,
+       10: Bit.cnl(0b11000000) === 2,
+       11: Bit.cnl(0b0111111110000000) === 8,
+       12: Bit.cnl(0b0000000000000000) === 0,
+       13: Bit.cnl(0b01111111111111111111111111111111) === 31,
+       14: Bit.cnl(0b11000000000000000000000000000000) === 2,
+       15: Bit.cnl(0x0) === 0,
+       16: Bit.cnl(0x1) === 1,
+       17: Bit.cnl(0x2) === 1,
+       18: Bit.cnl(0x3) === 2,
+       19: Bit.cnl(0x7fffffff) === 31,
+       20: Bit.cnl(0xffffffff) === 32,
+       30: Bit.cnl(0b11101111) === 3,
+       //            ~~~
+       31: Bit.cnl(0b11100000) === 3,
+       //            ~~~
+    };
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_cnr(test, pass, miss) {
+    var result = {
+        1: Bit.cnr(0b001) === 1,
+        2: Bit.cnr(0b010) === 1,
+        3: Bit.cnr(0b011) === 2,
+        4: Bit.cnr(0b100) === 1,
+       10: Bit.cnr(0b11000000) === 2,
+       11: Bit.cnr(0b0111111110000000) === 8,
+       12: Bit.cnr(0b0000000000000000) === 0,
+       13: Bit.cnr(0b01111111111111111111111111111111) === 31,
+       14: Bit.cnr(0b11000000000000000000000000000000) === 2,
+       15: Bit.cnr(0x0) === 0,
+       16: Bit.cnr(0x1) === 1,
+       17: Bit.cnr(0x2) === 1,
+       18: Bit.cnr(0x3) === 2,
+       19: Bit.cnr(0x7fffffff) === 31,
+       20: Bit.cnr(0xffffffff) === 32,
+       30: Bit.cnr(0b11101111) === 4,
+       //                ~~~~
+       31: Bit.cnr(0b11100000) === 3,
+       //            ~~~
     };
     if ( /false/.test(JSON.stringify(result)) ) {
         test.done(miss());

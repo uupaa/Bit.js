@@ -19,7 +19,7 @@ This module made of [WebModule](https://github.com/uupaa/WebModule).
 <script src="<module-dir>/lib/BitView.js"></script>
 <script>
 
-// get contiguous n bits.
+// get contiguous n bits (bit shift and mask).
 Bit.n(0x000000ff, 0b00000000000000000000000011111100) // -> 0x3f,
 Bit.n(0x000000ff, 0b00000000000000000000000011000000) // -> 0x03,
 
@@ -38,9 +38,9 @@ var [a, b, c] = Bit.split32(0x00001234, [16, 8, 8]);
 // population count (counting 1 bits)
 Bit.popcnt(0x6) // -> 2
 
-// Count the number of contiguous 1 bits
-Bit.contig(0b00111100) // -> 4
-Bit.contig(0b00000100) // -> 1
+// count the number of contiguous 1 bits from Left-side or Right-side
+Bit.cnl(0b11001110) // -> 2
+Bit.cnr(0b11001110) // -> 3
 
 // Number(Count) of Leading Zero
 Bit.nlz(0x6)    // -> 29
