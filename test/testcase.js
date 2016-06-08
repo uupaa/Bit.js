@@ -39,6 +39,7 @@ if (IN_BROWSER || IN_NW || IN_EL || IN_WORKER || IN_NODE) {
         testBit_BitView_ug,
         testBit_BitView_sg,
         testBit_BitView_sg_zero,
+        testBit_BitView_remainBits,
         testBit_BitView_EOS,
     ]);
 }
@@ -672,6 +673,45 @@ function testBit_BitView_sg_zero(test, pass, miss) {
         sg2: sg2 === source[1],
     };
 
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testBit_BitView_remainBits(test, pass, miss) {
+    var bv = new BitView(new Uint8Array([0,1]));
+
+    var a = bv.remainBits; // 8 + 8 = 16
+    bv.u(1);
+    var b = bv.remainBits; // 8 + 8 - 1 = 15
+    bv.u(6);
+    var c = bv.remainBits; // 8 + 8 - 6 = 9
+    bv.u(1);
+    var d = bv.remainBits; // 8 + 8 - 6 - 1 = 8
+    bv.u(1);
+    var e = bv.remainBits; // 8 + 8 - 6 - 1 - 1 = 7
+    bv.u(1);
+    var f = bv.remainBits; // 8 + 8 - 6 - 1 - 1 - 1 = 6
+    bv.u(1);
+    var g = bv.remainBits; // 8 + 8 - 6 - 1 - 1 - 1 - 1 = 5
+    bv.u(5);
+    var h = bv.remainBits; // 8 + 8 - 6 - 1 - 1 - 1 - 1 - 5 = 0
+    bv.u(1);
+    var i = bv.remainBits; // 8 + 8 - 6 - 1 - 1 - 1 - 1 - 5 = -1 -> 0 // EOS
+
+    var result = {
+        a: a === 16,
+        b: b === 15,
+        c: c === 9,
+        d: d === 8,
+        e: e === 7,
+        f: f === 6,
+        g: g === 5,
+        h: h === 0,
+        i: i === 0 && bv.EOS,
+    };
     if ( /false/.test(JSON.stringify(result)) ) {
         test.done(miss());
     } else {
